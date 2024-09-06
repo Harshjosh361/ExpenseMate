@@ -1,6 +1,11 @@
 package helper
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"time"
+
+	"github.com/golang-jwt/jwt"
+	"golang.org/x/crypto/bcrypt"
+)
 
 func HashPassword(password string) (string, error) {
 	//default cost to balance performance and security
@@ -14,4 +19,18 @@ func HashPassword(password string) (string, error) {
 
 func Checkpassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}
+
+func GenerateJWT(userId string) (string, error) {
+	var jwtSecret = []byte("your_secret_key")
+	claims := jwt.MapClaims{}
+	claims["authorized"] = true
+	claims["user_id"] = userId
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+
+	// Create the token
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	// Sign the token with the secret key
+	return token.SignedString(jwtSecret)
 }
