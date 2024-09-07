@@ -16,10 +16,12 @@ func main() {
 	r.HandleFunc("/", HomeHandler)
 	authrouter := r.PathPrefix("/api/v1/auth").Subrouter()
 	categoryrouter := r.PathPrefix("/api/v1/category").Subrouter()
+	expenserouter := r.PathPrefix("/api/v1/expense").Subrouter()
 
 	// Initializing AuthRoutes using SubRouter
 	routes.AuthRoute(authrouter)
 	routes.CateogryRoute(categoryrouter)
+	routes.ExpenseRoute(expenserouter)
 
 	log.Fatal(http.ListenAndServe(":8000", r))
 }
