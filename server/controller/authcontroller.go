@@ -54,7 +54,8 @@ func LoginController(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Sending Response with token and user data
-	w.WriteHeader(http.StatusOK)
+	// no need to write header json will automatically give status 200 OK
+	// w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{
 		"message": "Login Successfull",
 		"token":   token,

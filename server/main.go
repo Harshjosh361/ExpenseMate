@@ -15,9 +15,11 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", HomeHandler)
 	authrouter := r.PathPrefix("/api/v1/auth").Subrouter()
+	categoryrouter := r.PathPrefix("/api/v1/category").Subrouter()
 
 	// Initializing AuthRoutes using SubRouter
 	routes.AuthRoute(authrouter)
+	routes.CateogryRoute(categoryrouter)
 
 	log.Fatal(http.ListenAndServe(":8000", r))
 }
