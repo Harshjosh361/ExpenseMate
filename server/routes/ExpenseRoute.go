@@ -7,7 +7,7 @@ import (
 
 func ExpenseRoute(r *mux.Router) {
 	r.HandleFunc("/create-expense", controller.CreateExpenseController).Methods("POST")
-	// r.HandleFunc("/get-category", controller.GetCategory).Methods("GET")
-	// r.HandleFunc("/get-category/{id}", controller.GetSingleCategoryController).Methods("GET")
-	// r.HandleFunc("/delete-category/{id}", controller.DeleteCategoryController).Methods("DELETE")
+	r.HandleFunc("/get-expense", controller.GetAllExpenseController).Methods("GET")
+	r.HandleFunc("/get-expense/{id}", controller.GetExpenseController).Methods("GET")
+	r.HandleFunc("/delete-expense/{id}", controller.DeleteExpenseController).Methods("DELETE")
 }
