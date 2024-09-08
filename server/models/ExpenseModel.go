@@ -84,3 +84,103 @@ func DeleteExpense(id string) error {
 	}
 	return nil
 }
+
+func UpdateExpense(newExpense Expense) (Expense, error) {
+
+	var result Expense
+	update := bson.M{"$set": bson.M{
+		"title":    newExpense.Title,
+		"amount":   newExpense.Amount,
+		"category": newExpense.Category,
+		"date":     time.Now(),
+	}}
+	// db.CollectionExpense.UpdateOne(context.Background(), bson.M{}, update)
+	// FindOneAndUpdate gives back the document wheras updateone just give the count
+	err := db.CollectionExpense.FindOneAndUpdate(context.Background(), bson.M{}, update).Decode(&result)
+	if err != nil {
+		return Expense{}, errors.New("failed to update")
+	}
+	return result, nil
+}
+
+func GetLastThreeMonths() ([]Expense, error) {
+	threeMonthsAgo := time.Now().AddDate(0, -3, 0)
+	filter := bson.M{
+		"date": bson.M{"$gt": threeMonthsAgo},
+	}
+
+	Cursor, err := db.CollectionExpense.Find(context.Background(), filter)
+	if err != nil {
+		return nil, errors.New("failed to get data")
+	}
+	defer Cursor.Close(context.Background())
+
+	var expenses []Expense
+	for Cursor.Next(context.Background()) {
+		var expense Expense
+		Cursor.Decode(&expense)
+		expenses = append(expenses, expense)
+	}
+	return expenses, nil
+}
+
+func GetLastMonth() ([]Expense, error) {
+	lastMonth := time.Now().AddDate(0, -1, 0)
+	filter := bson.M{
+		"date": bson.M{"$gt": lastMonth},
+	}
+
+	Cursor, err := db.CollectionExpense.Find(context.Background(), filter)
+	if err != nil {
+		return nil, errors.New("failed to get data")
+	}
+	defer Cursor.Close(context.Background())
+
+	var expenses []Expense
+	for Cursor.Next(context.Background()) {
+		var expense Expense
+		Cursor.Decode(&expense)
+		expenses = append(expenses, expense)
+	}
+	return expenses, nil
+}
+func GetLastWeek() ([]Expense, error) {
+	lastWeek := time.Now().AddDate(0, 0, -7)
+	filter := bson.M{
+		"date": bson.M{"$gt": lastWeek},
+	}
+
+	Cursor, err := db.CollectionExpense.Find(context.Background(), filter)
+	if err != nil {
+		return nil, errors.New("failed to get data")
+	}
+	defer Cursor.Close(context.Background())
+
+	var expenses []Expense
+	for Cursor.Next(context.Background()) {
+		var expense Expense
+		Cursor.Decode(&expense)
+		expenses = append(expenses, expense)
+	}
+	return expenses, nil
+}
+
+func GetExpenseByDate(startdate, endDate time.Time) ([]Expense, error) {
+	filter := bson.M{
+		"date": bson.M{"$gt": startdate, "$lt": endDate},
+	}
+
+	Cursor, err := db.CollectionExpense.Find(context.Background(), filter)
+	if err != nil {
+		return nil, errors.New("failed to get data")
+	}
+	defer Cursor.Close(context.Background())
+
+	var expenses []Expense
+	for Cursor.Next(context.Background()) {
+		var expense Expense
+		Cursor.Decode(&expense)
+		expenses = append(expenses, expense)
+	}
+	return expenses, nil
+}
